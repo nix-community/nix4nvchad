@@ -5,7 +5,7 @@
 { config, pkgs, lib, ... }: let
   cfg = config.programs.nvchad;
   extraPackages = [];
-  neovim = pkgs.neovim;
+  neovim = cfg.neovim;
   nvchad = pkgs.callPackage ./nvchad.nix {
     inherit neovim;
     extraPackages = cfg.extraPackages;
