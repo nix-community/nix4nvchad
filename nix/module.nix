@@ -4,10 +4,8 @@
 
 { config, pkgs, lib, ... }: let
   cfg = config.programs.nvchad;
-  extraPackages = [];
-  neovim = cfg.neovim;
   nvchad = pkgs.callPackage ./nvchad.nix {
-    inherit neovim;
+    neovim = cfg.neovim;
     extraPackages = cfg.extraPackages;
     extraConfig = cfg.extraConfig;
   };
@@ -16,7 +14,7 @@
     enable = mkEnableOption "Enable NvChad";
     extraPackages = mkOption {
       type = types.listOf types.package;
-      default = extraPackages;
+      default = [ ];
       description = ''
         List of additional packages available for NvChad as runtime dependencies
         NvChad extensions assume that the libraries it need
@@ -38,7 +36,7 @@
     };
     neovim = mkOption {
       type = types.package;
-      default = neovim;
+      default = pkgs.neovim;
       defaultText = literalExpression "pkgs.neovim";
       description = "neovim package for use under nvchad wrapper";
     };

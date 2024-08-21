@@ -337,7 +337,7 @@ Somewhere in your `home.nix` or a separate module
 
 if false ignore this module when build new generation
 
-##### neovim
+##### neovim (optional)
 
 `pkgs.neovim`
 
