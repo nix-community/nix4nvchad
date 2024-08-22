@@ -354,14 +354,28 @@ will be available globally.
 By default, all dependencies for the starting configuration are included.
 Overriding the option will expand this list.
 
-##### extraConfig (optional)
+##### starterRepo (optional)
 
-`/nix/store/your-config-package`
+`/nix/store/your-starter-repo`
 
 Your own NvChad configuration based on the starter repository.
 Overriding the option will override the default configuration
 included in the module. This should be the path to the nix store.
-The easiest way is to use pkgs.fetchFromGitHub
+The easiest way is to use pkgs.fetchFromGitHub.
+
+##### extraConfig (optional)
+
+`string`
+
+The config written in lua. It will be loaded after nvchad loaded.
+
+##### lazy-lock (optional)
+
+`string`
+
+A json file. Which is in ~/.config/nvim/lazy-lock.json to lock lazy.nvim's plugin.
+
+Leave it as "" if don't want it.
 
 ##### hm-activation (optional)
 
