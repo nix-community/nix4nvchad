@@ -15,6 +15,7 @@ let
     extraPackages = cfg.extraPackages;
     starterRepo = cfg.starterRepo;
     extraConfig = cfg.extraConfig;
+    lazy-lock = cfg.lazy-lock;
   };
 in
 {
@@ -42,6 +43,7 @@ in
         ];
       '';
     };
+
     neovim = mkOption {
       type = types.package;
       default = pkgs.neovim;
@@ -50,9 +52,16 @@ in
     };
     extraConfig = mkOption {
       type = types.str;
-      default = ''Load more'';
+      default = "";
       description = "These config are loaded after nvchad in the end of init.lua in starter";
     };
+    lazy-lock = mkOption {
+      type = types.str;
+      default = "";
+      description = ''
+        Your lazy-lock.json. Left it blank if is not needed
+      '';
+    }
     starterRepo = mkOption {
       type = types.pathInStore;
       default = builtins.toPath (pkgs.fetchFromGitHub (import ./starter.nix));

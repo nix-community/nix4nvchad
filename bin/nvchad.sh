@@ -45,6 +45,9 @@ wrapper() {
 
 main() {
     check_init
+    if ! [ -s "${_CONF_DIR}/lazy-lock.json" ]; then
+      rm "$_CONF_DIR/lazy-lock.json" 
+    fi
     wrapper "$@"
 }
 
