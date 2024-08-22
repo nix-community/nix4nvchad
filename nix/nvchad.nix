@@ -20,6 +20,7 @@
   extraPackages ? [ ], # the default value is for import from flake.nix
   extraConfig ? "",
   starterRepo,
+  extraPlugins ? "return {}",
   lazy-lock ? "",
 }:
 with lib;
@@ -34,6 +35,15 @@ stdenvNoCC.mkDerivation rec {
   NewInitFile = writeText "init.lua" ''
     require "init"
     require "extraConfig"
+  '';
+  extraPluginsFile = writeText "plugins-2.lua" extraPlugins;
+  NewPluginsFile = writeText "init.lua" ''
+    M1 = require "plugins.init-1"
+    M2 = require "plugins.init-2"
+    for i = 1, #M2 do
+      M1[#M1 + 1] = M2[i]
+    end
+    return M1
   '';
   LockFile = writeText "lazy-lock.json" lazy-lock;
   nativeBuildInputs =
@@ -58,6 +68,10 @@ stdenvNoCC.mkDerivation rec {
     cp -r $src/* $out/config
     chmod 777 $out/config
     chmod 777 $out/config/lua # cp make it unwritable
+    chmod 777 $out/config/lua/plugins
+    mv $out/config/lua/plugins/init.lua $out/config/lua/plugins/init-1.lua
+    install -Dm777 $extraPluginsFile $out/config/lua/plugins/init-2.lua
+    install -Dm777 $NewPluginsFile $out/config/lua/plugins/init.lua
     install -Dm777 $nvChadBin $out/bin/nvim
     install -Dm777 $LockFile $out/config/lazy-lock.json
     install -Dm777 "$extraConfigFile" $out/config/lua/extraConfig.lua;

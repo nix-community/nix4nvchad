@@ -19,6 +19,7 @@ let
     starterRepo = nvchad-starter;
     extraConfig = cfg.extraConfig;
     lazy-lock = cfg.lazy-lock;
+    extraPlugins = cfg.extraPlugins;
   };
 in
 {
@@ -52,6 +53,11 @@ in
       default = pkgs.neovim;
       defaultText = literalExpression "pkgs.neovim";
       description = "neovim package for use under nvchad wrapper";
+    };
+    extraPlugins = mkOption{
+      type = types.str;
+      default = "return {}";
+      description = "The extra plugins you want to install. That's a part of lazy.nvim config.";
     };
     extraConfig = mkOption {
       type = types.str;

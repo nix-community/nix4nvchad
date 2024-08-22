@@ -275,6 +275,7 @@ Or with customization of options:
 
 - enable
 - neovim
+- extraPlugins
 - extraPackages
 - extraConfig
 - lazy-lock
@@ -293,6 +294,22 @@ if false ignore this module when build new generation
 
 "neovim package for use under nvchad wrapper"
 
+##### extraPlugins (optional)
+
+```
+return {
+  {"equalsraf/neovim-gui-shim",lazy=false},
+  {"lervag/vimtex",lazy=false},
+  {"nvim-lua/plenary.nvim"},
+  {
+    'xeluxee/competitest.nvim',
+    dependencies = 'MunifTanjim/nui.nvim',
+    config = function() require('competitest').setup() end,
+  },
+}
+```
+
+The extra plugins you want to install. Loaded by lazy.nvim
 
 ##### extraPackages (optional)
 
