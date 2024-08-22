@@ -5,7 +5,6 @@
 {
   stdenvNoCC,
   writeText,
-  fetchFromGitHub,
   makeWrapper,
   lib,
   coreutils,

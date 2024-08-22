@@ -103,8 +103,8 @@ containing your NixOS configuration:
     };
     # ...
     nvchad4nix = {
-    url = "github:NvChad/nix";
-    inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:NvChad/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     # ...
   };
@@ -114,8 +114,6 @@ This flake provides an overlay for Nixpkgs, with package and a home-manager modu
 
 They are respectively found in the flake as
 
-- `inputs.nvchad4nix.overlays.default`
-- `inputs.nvchad4nix.overlays.nvchad`
 - `inputs.nvchad4nix.packages.${system}.default`
 - `inputs.nvchad4nix.packages.${system}.nvchad`
 - `inputs.nvchad4nix.homeManagerModule`
@@ -159,7 +157,7 @@ In the example below, the home manager is installed as a NixOS module
 If you are new to NixOS here is a useful channel [Vimjoyer](https://www.youtube.com/watch?v=rEovNpg7J0M)
 
 
-### Third step (Optional)
+### Third step
 
 All we have to do is add nvchad to the list of available packages using overlays
 
@@ -198,7 +196,9 @@ Or add directly to `flake.nix`
           {  # <- # example to add the overlay to Nixpkgs:
             nixpkgs = {
               overlays = [
-                inputs.nvchad4nix.overlays.default
+                (final: prev: {
+                    nvchad = inputs.nvchad4nix.packages."${pkgs.system}".nvchad;
+                })
               ];
             };
           }
@@ -265,60 +265,8 @@ Or with customization of options:
         flake8
       ]))
     ];
-    extraConfig = pkgs.fetchFromGitHub {  # <- you can set your repo here
-      owner = "NvChad";
-      repo = "starter";
-      rev = "41c5b467339d34460c921a1764c4da5a07cdddf7";
-      sha256 = "sha256-yxZTxFnw5oV/76g+qkKs7UIwgkpD+LkN/6IJxiV9iRY=";
-      name = "nvchad-2.5-starter";
-    };
     hm-activation = true;
     backup = true;
-  };
-}
-```
-
-You can also add your repository with vanilla `NvChad` setup
-and your overlay based on [Starter](https://github.com/NvChad/starter) on pure `.lua`
-to flake.nix `inputs`
-
-```nix
-  inputs = {
-    # Default:
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    # NvChad:
-    nvchad4nix = {
-      url = "github:NvChad/nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nvchad-on-steroids = {  # <- here
-      url = "github:MOIS3Y/nvchad-on-steroids";
-      flake = false;
-    };
-  };
-```
-
-And then:
-
-Somewhere in your `home.nix` or a separate module
-
-```nix
-{ inputs, config, pkgs, ... }: {
-  imports = [
-    inputs.nvchad4nix.homeManagerModule
-  ];
-  programs.nvchad = {
-    enable = true;
-    extraPackages = with pkgs; [
-      emmet-language-server
-      nixd
-    extraConfig = inputs.nvchad-on-steroids; # <- here extraConfig from inputs
-    hm-activation = true;
-    backup = false;
   };
 }
 ```
@@ -326,8 +274,10 @@ Somewhere in your `home.nix` or a separate module
 #### Available options:
 
 - enable
+- neovim
 - extraPackages
 - extraConfig
+- lazy-lock
 - hm-activation
 - backup
 
@@ -353,15 +303,6 @@ NvChad extensions assume that the libraries it need
 will be available globally.
 By default, all dependencies for the starting configuration are included.
 Overriding the option will expand this list.
-
-##### starterRepo (optional)
-
-`/nix/store/your-starter-repo`
-
-Your own NvChad configuration based on the starter repository.
-Overriding the option will override the default configuration
-included in the module. This should be the path to the nix store.
-The easiest way is to use pkgs.fetchFromGitHub.
 
 ##### extraConfig (optional)
 
@@ -403,45 +344,6 @@ You probably do not need backups, just disable them
 `config.programs.nvchad.backup = false;`
 
 
-### package override
-
-**Note!** remember that the package is available globally for installation,
-use the overlay from the section [Installation](#installation)
-
-The package build can be customized:
-
-```nix
-{ config, pkgs, ... }: let
-  my-awesome-nvchad-conf = pkgs.fetchFromGitHub {
-    owner = "NvChad";
-    repo = "starter";
-    rev = "41c5b467339d34460c921a1764c4da5a07cdddf7";
-    sha256 = "sha256-yxZTxFnw5oV/76g+qkKs7UIwgkpD+LkN/6IJxiV9iRY=";
-    name = "nvchad-2.5-starter";
-  };
-in {
-  home.packages = with pkgs; [
-    (pkgs.nvchad.override {
-      extraPackages = [ nixd emmet-language-server ];
-      extraConfig = my-awesome-nvchad-conf;
-    })
-  ];
-}
-```
-
-Or with inputs:
-
-```nix
-{ inputs, config, pkgs, ... }: {
-  home.packages = with pkgs; [
-    (pkgs.nvchad.override {
-      extraPackages = [ nixd emmet-language-server ];
-      extraConfig = inputs.my-awesome-nvchad-conf;
-    })
-  ];
-}
-```
-
 # Usage
 
 Whichever method you choose, after installation you'll probably want to run `NvChad`
@@ -455,7 +357,7 @@ If you are not using the HM module or have disabled `hm-activation`:
 - this will be either your configuration or starter
 - if `~/.config/nvim/` is not empty `NvChad` will create a backup copy nearby
 
- #### Note!
+#### Note!
 
 If you are using the NvChad home-manager module, do not add neovim from the standard module:
 
@@ -466,3 +368,30 @@ Also, do not add neovim as a package to the configuration:
  ```nix
 home.packages = [ pkgs.neovim ];
 ```
+
+# Use your own NvChad
+
+You can use your own nvchad by providing [Starter](https://github.com/NvChad/starter) repo by following steps.
+
+```nix
+  inputs = {
+    # Default:
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nvchad-starter = {
+      url = "github.com:NvChad/starter";
+      flakes = false;
+    }
+    # NvChad:
+    nvchad4nix = {
+      url = "github:NvChad/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nvchad-starter.follows = "nvchad-starter";
+    };
+  };
+```
+
+And follow above steps.

@@ -3,10 +3,12 @@
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -
 
 {
-  config,
-  pkgs,
-  lib,
   nvchad-starter,
+}:
+{
+  pkgs,
+  config,
+  lib ? pkgs.lib,
   ...
 }:
 let

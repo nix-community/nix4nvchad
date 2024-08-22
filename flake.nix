@@ -55,11 +55,10 @@
         };
         default = nvchad;
       });
-      overlays = (import ./nix/overlays.nix { }) // {
-        default = self.overlays.nvchad;
-      };
       homeManagerModules = rec {
-        nvchad = import ./nix/module.nix;
+        nvchad = import ./nix/module.nix {
+          inherit nvchad-starter;
+        };
         default = nvchad;
       };
       homeManagerModule = self.homeManagerModules.nvchad;
