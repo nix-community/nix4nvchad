@@ -6,6 +6,7 @@
   config,
   pkgs,
   lib,
+  nvchad-starter,
   ...
 }:
 let
@@ -13,7 +14,7 @@ let
   nvchad = pkgs.callPackage ./nvchad.nix {
     neovim = cfg.neovim;
     extraPackages = cfg.extraPackages;
-    starterRepo = cfg.starterRepo;
+    starterRepo = nvchad-starter;
     extraConfig = cfg.extraConfig;
     lazy-lock = cfg.lazy-lock;
   };
@@ -60,26 +61,6 @@ in
       default = "";
       description = ''
         Your lazy-lock.json. Left it blank if is not needed
-      '';
-    }
-    starterRepo = mkOption {
-      type = types.pathInStore;
-      default = builtins.toPath (pkgs.fetchFromGitHub (import ./starter.nix));
-      description = ''
-        Your own NvChad configuration based on the starter repository.
-        https://github.com/NvChad/starter
-        Overriding the option will override the default configuration
-        included in the module. This should be the path to the nix store.
-        The easiest way is to use pkgs.fetchFromGitHub
-      '';
-      example = literalExpression ''
-        pkgs.fetchFromGitHub {
-          owner = "NvChad";
-          repo = "starter";
-          rev = "41c5b467339d34460c921a1764c4da5a07cdddf7";
-          sha256 = "sha256-yxZTxFnw5oV/76g+qkKs7UIwgkpD+LkN/6IJxiV9iRY=";
-          name = "nvchad-2.5-starter";
-        };
       '';
     };
     backup = mkOption {
