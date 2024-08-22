@@ -15,39 +15,53 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nvchad-starter.url = "github:NvChad/starter/main"; # people who want to use diffrent starter could override this.
+    nvchad-starter.flake = false;
   };
 
-  outputs = { self, nixpkgs }: let
-    supportedSystems = [
-      "x86_64-linux"
-      "x86_64-darwin"
-      "aarch64-linux"
-      "aarch64-darwin"
-    ];
-    forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-    nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
-in {
-  # Executed by `nix build .#<name>`
-  packages = forAllSystems (system: let
-    pkgs = nixpkgsFor.${system};
-  in rec {
-    nvchad = pkgs.callPackage ./nix/nvchad.nix {};
-    default = nvchad;
-  });
-  # Executed by `nix run .#<name>
-  apps = forAllSystems (system: rec {
-    nvchad = {
-      type = "app";
-      program = "${self.packages.${system}.default}/bin/nvim";
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nvchad-starter,
+    }:
+    let
+      supportedSystems = [
+        "x86_64-linux"
+        "x86_64-darwin"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
+    in
+    {
+      # Executed by `nix build .#<name>`
+      packages = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgsFor.${system};
+        in
+        rec {
+          nvchad = pkgs.callPackage ./nix/nvchad.nix { starterRepo = "${nvchad-starter}"; };
+          default = nvchad;
+        }
+      );
+      # Executed by `nix run .#<name>
+      apps = forAllSystems (system: rec {
+        nvchad = {
+          type = "app";
+          program = "${self.packages.${system}.default}/bin/nvim";
+        };
+        default = nvchad;
+      });
+      overlays = (import ./nix/overlays.nix { }) // {
+        default = self.overlays.nvchad;
+      };
+      homeManagerModules = rec {
+        nvchad = import ./nix/module.nix;
+        default = nvchad;
+      };
+      homeManagerModule = self.homeManagerModules.nvchad;
     };
-    default = nvchad;
-  });
-  overlays = (import ./nix/overlays.nix { })
-  // { default = self.overlays.nvchad ; };
-  homeManagerModules = rec {
-    nvchad = import ./nix/module.nix;
-    default = nvchad;
-  };
-  homeManagerModule = self.homeManagerModules.nvchad;
-  };
 }

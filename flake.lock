@@ -16,9 +16,27 @@
         "type": "github"
       }
     },
+    "nvchad-starter": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1723385181,
+        "narHash": "sha256-J0iB+5aRuirhF91CnFfG8hDmkY5jOT2QlHrkoku3WVw=",
+        "owner": "NvChad",
+        "repo": "starter",
+        "rev": "3e1667ef3c5c5f74ba0783eb50984f5e2700948c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NvChad",
+        "ref": "main",
+        "repo": "starter",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "nvchad-starter": "nvchad-starter"
       }
     }
   },

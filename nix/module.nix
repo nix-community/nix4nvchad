@@ -2,14 +2,22 @@
 # █▀█ █░▀░█ ░░ █░▀░█ █▄█ █▄▀ █▄█ █▄▄ ██▄ ▄
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -
 
-{ config, pkgs, lib, ... }: let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+let
   cfg = config.programs.nvchad;
   nvchad = pkgs.callPackage ./nvchad.nix {
     neovim = cfg.neovim;
     extraPackages = cfg.extraPackages;
+    starterRepo = cfg.starterRepo;
     extraConfig = cfg.extraConfig;
   };
-  in {
+in
+{
   options.programs.nvchad = with lib; {
     enable = mkEnableOption "Enable NvChad";
     extraPackages = mkOption {
@@ -41,6 +49,11 @@
       description = "neovim package for use under nvchad wrapper";
     };
     extraConfig = mkOption {
+      type = types.str;
+      default = ''Load more'';
+      description = "These config are loaded after nvchad in the end of init.lua in starter";
+    };
+    starterRepo = mkOption {
       type = types.pathInStore;
       default = builtins.toPath (pkgs.fetchFromGitHub (import ./starter.nix));
       description = ''
@@ -87,55 +100,63 @@
       '';
     };
   };
-  config = with pkgs; with lib; let
-    confDir = "${config.xdg.configHome}/nvim";
-  in mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = !config.programs.neovim.enable;
-        message = ''
-          NvChad provides a neovim binary, please choose which you want to use.
-          
-          Use Default neovim binary:
-          programs.neovim.enable = true;
+  config =
+    with pkgs;
+    with lib;
+    let
+      confDir = "${config.xdg.configHome}/nvim";
+    in
+    mkIf cfg.enable {
+      assertions = [
+        {
+          assertion = !config.programs.neovim.enable;
+          message = ''
+            NvChad provides a neovim binary, please choose which you want to use.
 
-          Use Nvchad neovim binary:
-          programs.nvchad.enable = true;
+            Use Default neovim binary:
+            programs.neovim.enable = true;
 
-          You cannot use both at the same time.
-        '';
-      }
-    ];
-    home = {
-      packages = [ nvchad ];  
-      activation = mkIf cfg.hm-activation {
-        backupNvChad = hm.dag.entryBefore ["checkLinkTargets"] ''
-          if [ -d "${confDir}" ]; then
-            ${(
-              if cfg.backup then ''
-                backup_name="nvim_$(${coreutils}/bin/date +'%Y_%m_%d_%H_%M_%S').bak"
-                ${coreutils}/bin/mv \
-                  ${confDir} \
-                  ${config.xdg.configHome}/$backup_name
-              ''
-              else ''
-                ${coreutils}/bin/rm -r ${confDir}
-              ''
-            )}
-          fi
-        '';
-        copyNvChad = hm.dag.entryAfter ["writeBoundary"] ''
-          ${coreutils}/bin/mkdir ${confDir}
-          ${coreutils}/bin/cp -r ${nvchad}/config/* ${confDir}
-          for file_or_dir in $(${findutils}/bin/find ${confDir}); do
-            if [ -d "$file_or_dir" ]; then
-              ${coreutils}/bin/chmod 755 $file_or_dir
-            else
-              ${coreutils}/bin/chmod 664 $file_or_dir
+            Use Nvchad neovim binary:
+            programs.nvchad.enable = true;
+
+            You cannot use both at the same time.
+          '';
+        }
+      ];
+      home = {
+        packages = [ nvchad ];
+        activation = mkIf cfg.hm-activation {
+          backupNvChad = hm.dag.entryBefore [ "checkLinkTargets" ] ''
+            if [ -d "${confDir}" ]; then
+              ${
+                (
+                  if cfg.backup then
+                    ''
+                      backup_name="nvim_$(${coreutils}/bin/date +'%Y_%m_%d_%H_%M_%S').bak"
+                      ${coreutils}/bin/mv \
+                        ${confDir} \
+                        ${config.xdg.configHome}/$backup_name
+                    ''
+                  else
+                    ''
+                      ${coreutils}/bin/rm -r ${confDir}
+                    ''
+                )
+              }
             fi
-          done
-        '';
+          '';
+          copyNvChad = hm.dag.entryAfter [ "writeBoundary" ] ''
+            ${coreutils}/bin/mkdir ${confDir}
+            ${coreutils}/bin/cp -r ${nvchad}/config/* ${confDir}
+            for file_or_dir in $(${findutils}/bin/find ${confDir}); do
+              if [ -d "$file_or_dir" ]; then
+                ${coreutils}/bin/chmod 755 $file_or_dir
+              else
+                ${coreutils}/bin/chmod 664 $file_or_dir
+              fi
+            done
+          '';
+        };
       };
     };
-  };
 }
