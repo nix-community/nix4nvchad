@@ -62,5 +62,6 @@
         default = nvchad;
       };
       homeManagerModule = self.homeManagerModules.nvchad;
+      checks = self.packages;
     };
 }
