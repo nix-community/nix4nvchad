@@ -10,6 +10,7 @@
   coreutils,
   findutils,
   git,
+  gcc,
   gcc_new ? gcc,
   neovim,
   nodejs,
