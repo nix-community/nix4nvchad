@@ -16,6 +16,7 @@ let
   nvchad = pkgs.callPackage ./nvchad.nix {
     neovim = cfg.neovim;
     extraPackages = cfg.extraPackages;
+    gcc_new = cfg.gcc;
     starterRepo = nvchad-starter;
     extraConfig = cfg.extraConfig;
     lazy-lock = cfg.lazy-lock;
@@ -63,6 +64,11 @@ in
       type = types.str;
       default = "";
       description = "These config are loaded after nvchad in the end of init.lua in starter";
+    };
+    gcc = mkOption {
+      type = types.package;
+      default = pkgs.gcc;
+      description = "The gcc you want to use";
     };
     lazy-lock = mkOption {
       type = types.str;

@@ -10,7 +10,7 @@
   coreutils,
   findutils,
   git,
-  gcc,
+  gcc_new ? gcc,
   neovim,
   nodejs,
   lua5_1,
@@ -53,7 +53,7 @@ stdenvNoCC.mkDerivation rec {
         coreutils
         findutils
         git
-        gcc
+        gcc_new
         nodejs
         lua-language-server
         (lua5_1.withPackages (ps: with ps; [ luarocks ]))
