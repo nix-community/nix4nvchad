@@ -278,6 +278,7 @@ Or with customization of options:
 - extraPlugins
 - extraPackages
 - extraConfig
+- gcc
 - lazy-lock
 - hm-activation
 - backup
@@ -326,6 +327,12 @@ Overriding the option will expand this list.
 `string`
 
 The config written in lua. It will be loaded after nvchad loaded.
+
+##### gcc (optional)
+
+`pkg.gcc`
+
+The gcc compiler you want to use
 
 ##### lazy-lock (optional)
 
