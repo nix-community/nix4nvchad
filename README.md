@@ -1,6 +1,6 @@
 # NvChad on Nix
 
-![logo](https://camo.githubusercontent.com/0c8e304d05532523126d58c26c874afeefed5df97071e7429dd43d5e8f9b705f/68747470733a2f2f6e76636861642e636f6d2f73637265656e73686f74732f6f6e656461726b2e77656270)
+![logo](https://nvchad.com/screenshots/onedark.webp)
 
 ## What is it?
 
