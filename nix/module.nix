@@ -2,9 +2,7 @@
 # █▀█ █░▀░█ ░░ █░▀░█ █▄█ █▄▀ █▄█ █▄▄ ██▄ ▄
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -
 
-{
-  nvchad-starter,
-}:
+{ nvchad-starter }:
 {
   pkgs,
   config,
@@ -12,6 +10,14 @@
   ...
 }:
 let
+  inherit (lib)
+    mkEnableOption
+    types
+    mkOption
+    literalExpression
+    mkIf
+		hm
+    ;
   cfg = config.programs.nvchad;
   nvchad = pkgs.callPackage ./nvchad.nix {
     neovim = cfg.neovim;
@@ -24,7 +30,7 @@ let
   };
 in
 {
-  options.programs.nvchad = with lib; {
+  options.programs.nvchad = {
     enable = mkEnableOption "Enable NvChad";
     extraPackages = mkOption {
       type = types.listOf types.package;
@@ -55,7 +61,7 @@ in
       defaultText = literalExpression "pkgs.neovim";
       description = "neovim package for use under nvchad wrapper";
     };
-    extraPlugins = mkOption{
+    extraPlugins = mkOption {
       type = types.str;
       default = "return {}";
       description = "The extra plugins you want to install. That's a part of lazy.nvim config.";
@@ -105,8 +111,6 @@ in
     };
   };
   config =
-    with pkgs;
-    with lib;
     let
       confDir = "${config.xdg.configHome}/nvim";
     in
@@ -129,38 +133,42 @@ in
       ];
       home = {
         packages = [ nvchad ];
-        activation = mkIf cfg.hm-activation {
-          backupNvChad = hm.dag.entryBefore [ "checkLinkTargets" ] ''
-            if [ -d "${confDir}" ]; then
-              ${
-                (
-                  if cfg.backup then
-                    ''
-                      backup_name="nvim_$(${coreutils}/bin/date +'%Y_%m_%d_%H_%M_%S').bak"
-                      ${coreutils}/bin/mv \
-                        ${confDir} \
-                        ${config.xdg.configHome}/$backup_name
-                    ''
-                  else
-                    ''
-                      ${coreutils}/bin/rm -r ${confDir}
-                    ''
-                )
-              }
-            fi
-          '';
-          copyNvChad = hm.dag.entryAfter [ "writeBoundary" ] ''
-            ${coreutils}/bin/mkdir ${confDir}
-            ${coreutils}/bin/cp -r ${nvchad}/config/* ${confDir}
-            for file_or_dir in $(${findutils}/bin/find ${confDir}); do
-              if [ -d "$file_or_dir" ]; then
-                ${coreutils}/bin/chmod 755 $file_or_dir
-              else
-                ${coreutils}/bin/chmod 664 $file_or_dir
+        activation =
+          let
+            coreutils = pkgs.coreutils;
+          in
+          mkIf cfg.hm-activation {
+            backupNvChad = hm.dag.entryBefore [ "checkLinkTargets" ] ''
+              if [ -d "${confDir}" ]; then
+                ${
+                  (
+                    if cfg.backup then
+                      ''
+                        backup_name="nvim_$(${coreutils}/bin/date +'%Y_%m_%d_%H_%M_%S').bak"
+                        ${coreutils}/bin/mv \
+                          ${confDir} \
+                          ${config.xdg.configHome}/$backup_name
+                      ''
+                    else
+                      ''
+                        ${coreutils}/bin/rm -r ${confDir}
+                      ''
+                  )
+                }
               fi
-            done
-          '';
-        };
+            '';
+            copyNvChad = hm.dag.entryAfter [ "writeBoundary" ] ''
+              ${coreutils}/bin/mkdir ${confDir}
+              ${coreutils}/bin/cp -r ${nvchad}/config/* ${confDir}
+              for file_or_dir in $(${pkgs.findutils}/bin/find ${confDir}); do
+                if [ -d "$file_or_dir" ]; then
+                  ${coreutils}/bin/chmod 755 $file_or_dir
+                else
+                  ${coreutils}/bin/chmod 664 $file_or_dir
+                fi
+              done
+            '';
+          };
       };
     };
 }

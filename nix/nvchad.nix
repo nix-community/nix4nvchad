@@ -24,8 +24,15 @@
   extraPlugins ? "return {}",
   lazy-lock ? "",
 }:
-with lib;
-stdenvNoCC.mkDerivation rec {
+let
+  inherit (lib)
+    lists
+    makeBinPath
+    licenses
+    maintainers
+    ;
+in
+stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "nvchad";
   version = "2.5";
   src = starterRepo;
@@ -78,7 +85,7 @@ stdenvNoCC.mkDerivation rec {
     install -Dm777 "$extraConfigFile" $out/config/lua/extraConfig.lua;
     mv $out/config/init.lua $out/config/lua/init.lua
     install -Dm777 $NewInitFile $out/config/init.lua
-    wrapProgram $out/bin/nvim --prefix PATH : '${makeBinPath nativeBuildInputs}'
+    wrapProgram $out/bin/nvim --prefix PATH : '${makeBinPath finalAttrs.nativeBuildInputs}'
     runHook postInstall
   '';
   postInstall = ''
@@ -98,4 +105,4 @@ stdenvNoCC.mkDerivation rec {
       bot-wxt1221
     ];
   };
-}
+})
