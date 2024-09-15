@@ -15,8 +15,10 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    nvchad-starter.url = "github:NvChad/starter/main"; # people who want to use diffrent starter could override this.
-    nvchad-starter.flake = false;
+    nvchad-starter = {
+      url = "github:NvChad/starter/main"; # people who want to use a different starter could override this.
+      flake = false;
+    };
   };
 
   outputs =
