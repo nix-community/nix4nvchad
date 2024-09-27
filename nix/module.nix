@@ -158,7 +158,7 @@ in
               fi
             '';
             copyNvChad = hm.dag.entryAfter [ "writeBoundary" ] ''
-              ${coreutils}/bin/mkdir ${confDir}
+              ${coreutils}/bin/mkdir -p ${confDir}
               ${coreutils}/bin/cp -r ${nvchad}/config/* ${confDir}
               for file_or_dir in $(${pkgs.findutils}/bin/find ${confDir}); do
                 if [ -d "$file_or_dir" ]; then
