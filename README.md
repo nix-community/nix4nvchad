@@ -328,6 +328,12 @@ Overriding the option will expand this list.
 
 The config written in lua. It will be loaded after nvchad loaded.
 
+#### chadrcConfig (optional)
+
+`string`
+
+Configuration that replaces chadrc.lua. Make sure to include `local M = {}` at the top, and `return M` at the bottom.
+
 ##### gcc (optional)
 
 `pkg.gcc`
