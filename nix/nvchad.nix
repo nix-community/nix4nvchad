@@ -20,6 +20,7 @@
   tree-sitter,
   extraPackages ? [ ], # the default value is for import from flake.nix
   extraConfig ? "",
+  chadrcConfig ? "",
   starterRepo,
   extraPlugins ? "return {}",
   lazy-lock ? "",
@@ -30,6 +31,7 @@ let
     makeBinPath
     licenses
     maintainers
+    optionalString
     ;
 in
 stdenvNoCC.mkDerivation (finalAttrs: {
@@ -53,6 +55,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     end
     return M1
   '';
+  NewChadrcFile = writeText "chadrc.lua" chadrcConfig;
   LockFile = writeText "lazy-lock.json" lazy-lock;
   nativeBuildInputs =
     (lists.unique (
@@ -77,6 +80,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     chmod 777 $out/config
     chmod 777 $out/config/lua # cp make it unwritable
     chmod 777 $out/config/lua/plugins
+    ${optionalString (chadrcConfig != "") "install -Dm777 $NewChadrcFile $out/config/lua/chadrc.lua"}
     mv $out/config/lua/plugins/init.lua $out/config/lua/plugins/init-1.lua
     install -Dm777 $extraPluginsFile $out/config/lua/plugins/init-2.lua
     install -Dm777 $NewPluginsFile $out/config/lua/plugins/init.lua

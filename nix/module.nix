@@ -25,6 +25,7 @@ let
     gcc_new = cfg.gcc;
     starterRepo = nvchad-starter;
     extraConfig = cfg.extraConfig;
+    chadrcConfig = cfg.chadrcConfig;
     lazy-lock = cfg.lazy-lock;
     extraPlugins = cfg.extraPlugins;
   };
@@ -70,6 +71,11 @@ in
       type = types.str;
       default = "";
       description = "These config are loaded after nvchad in the end of init.lua in starter";
+    };
+    chadrcConfig = mkOption {
+      type = types.str;
+      default = "";
+      description = "This config replaces the chadrc.lua file. Make sure to include `local M = {}` at the top, and `return M` at the bottom.";
     };
     gcc = mkOption {
       type = types.package;
