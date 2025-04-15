@@ -19,11 +19,11 @@
     "nvchad-starter": {
       "flake": false,
       "locked": {
-        "lastModified": 1736643544,
-        "narHash": "sha256-PoThdeLgPIFrqVMgwOyWsPDD01K4qEFT6Q5LHz6n5DM=",
+        "lastModified": 1744683935,
+        "narHash": "sha256-3ev7kaDwFW9llqdnXUAKnSgXIhQlsipxVkyNNYZFzJg=",
         "owner": "NvChad",
         "repo": "starter",
-        "rev": "c3d1fb646a04aaa97b2929b90269f8a7bf8e8dc4",
+        "rev": "85404dcb03bda6badc55cec998b3bdbe76b81138",
         "type": "github"
       },
       "original": {
