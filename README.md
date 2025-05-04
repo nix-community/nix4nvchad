@@ -237,15 +237,15 @@ Or with customization of options:
 
 ### Available options:
 
-- [enable](#####enable)
-- [neovim](#####neovim)
-- [extraPlugins](#####extraPlugins)
-- [extraPackages](#####extraPackages)
-- [extraConfig](#####extraConfig)
-- [gcc](#####gcc)
-- [lazy-lock](#####lazy-lock)
-- [hm-activation](#####hm-activation)
-- [backup](#####backup)
+- [enable](#enable)
+- [neovim](#neovim)
+- [extraPlugins](#extraPlugins)
+- [extraPackages](#extraPackages)
+- [extraConfig](#extraConfig)
+- [gcc](#gcc)
+- [lazy-lock](#lazy-lock)
+- [hm-activation](#hm-activation)
+- [backup](#backup)
 
 All options are not required
 
