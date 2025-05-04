@@ -2,14 +2,21 @@
 # █▀█ █░▀░█ ░░ █░▀░█ █▄█ █▄▀ █▄█ █▄▄ ██▄ ▄
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -
 
-{ config, pkgs, lib ? pkgs.lib, starterRepo, ...}: let
+{ starterRepo }:
+{
+  config,
+  pkgs,
+  lib ? pkgs.lib,
+  ...
+}:
+let
   inherit (lib)
     mkEnableOption
     types
     mkOption
     literalExpression
     mkIf
-		hm
+    hm
     ;
   cfg = config.programs.nvchad;
   nvchad = pkgs.callPackage ./nvchad.nix {
@@ -22,7 +29,8 @@
     chadrcConfig = cfg.chadrcConfig;
     lazy-lock = cfg.lazy-lock;
   };
-  in {
+in
+{
   options.programs.nvchad = {
     enable = mkEnableOption "Wether to enable NvChad.";
     extraPackages = mkOption {

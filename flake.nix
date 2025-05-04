@@ -24,28 +24,40 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, nvchad-starter }:
-    flake-utils.lib.eachDefaultSystem (system:
-    let
-      pkgs = import nixpkgs { inherit system; };
-    in {
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      nvchad-starter,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+      in
+      {
         packages = rec {
           nvchad = pkgs.callPackage ./nix/nvchad.nix { starterRepo = nvchad-starter; };
           default = nvchad;
         };
         apps = rec {
-          nvchad = flake-utils.lib.mkApp { drv = self.packages.${system}.nvchad; }
-          # ? workaround add meta attrs to avoid warning message
-          // { meta = self.packages.${system}.nvchad.meta; };
+          nvchad =
+            flake-utils.lib.mkApp { drv = self.packages.${system}.nvchad; }
+            # ? workaround add meta attrs to avoid warning message
+            // {
+              meta = self.packages.${system}.nvchad.meta;
+            };
           default = nvchad;
         };
         checks = self.packages.${system};
       }
-    ) // { 
-    homeManagerModules = rec {
-      nvchad = import ./nix/module.nix { starterRepo = nvchad-starter; };
-      default = nvchad;
+    )
+    // {
+      homeManagerModules = rec {
+        nvchad = import ./nix/module.nix { starterRepo = nvchad-starter; };
+        default = nvchad;
+      };
+      homeManagerModule = self.homeManagerModules.nvchad;
     };
-    homeManagerModule = self.homeManagerModules.nvchad;
-  };
 }

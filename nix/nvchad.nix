@@ -2,27 +2,28 @@
 # █░▀█ ▀▄▀ █▄▄ █▀█ █▀█ █▄▀ ▄
 # -- -- -- -- -- -- -- -- --
 
-{ stdenvNoCC
-, writeText
-, makeWrapper
-, lib
-, coreutils
-, findutils
-, git
-, gcc
-, gcc_new ? gcc
-, neovim
-, nodejs
-, lua5_1
-, lua-language-server
-, ripgrep
-, tree-sitter
-, extraPackages ? [ ] # the default value is for import from flake.nix
-, extraConfig ? ""
-, chadrcConfig ? ""
-, starterRepo
-, extraPlugins ? "return {}"
-, lazy-lock ? ""
+{
+  stdenvNoCC,
+  writeText,
+  makeWrapper,
+  lib,
+  coreutils,
+  findutils,
+  git,
+  gcc,
+  gcc_new ? gcc,
+  neovim,
+  nodejs,
+  lua5_1,
+  lua-language-server,
+  ripgrep,
+  tree-sitter,
+  extraPackages ? [ ], # the default value is for import from flake.nix
+  extraConfig ? "",
+  chadrcConfig ? "",
+  starterRepo,
+  extraPlugins ? "return {}",
+  lazy-lock ? "",
 }:
 let
   inherit (lib)
@@ -58,20 +59,22 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [ makeWrapper ];
 
-  buildInputs = (lists.unique (
-    extraPackages
-    ++ [
-      coreutils
-      findutils
-      git
-      gcc_new
-      nodejs
-      lua-language-server
-      (lua5_1.withPackages (ps: with ps; [ luarocks ]))
-      ripgrep
-      tree-sitter
-    ]
-  )) ++ [ neovim ];
+  buildInputs =
+    (lists.unique (
+      extraPackages
+      ++ [
+        coreutils
+        findutils
+        git
+        gcc_new
+        nodejs
+        lua-language-server
+        (lua5_1.withPackages (ps: with ps; [ luarocks ]))
+        ripgrep
+        tree-sitter
+      ]
+    ))
+    ++ [ neovim ];
 
   installPhase = ''
     runHook preInstall
