@@ -2,10 +2,10 @@
 # █▀█ █░▀░█ ░░ █░▀░█ █▄█ █▄▀ █▄█ █▄▄ ██▄ ▄
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -
 
-{ nvchad-starter }:
+{ starterRepo }:
 {
-  pkgs,
   config,
+  pkgs,
   lib ? pkgs.lib,
   ...
 }:
@@ -16,23 +16,23 @@ let
     mkOption
     literalExpression
     mkIf
-		hm
+    hm
     ;
   cfg = config.programs.nvchad;
   nvchad = pkgs.callPackage ./nvchad.nix {
+    inherit starterRepo;
     neovim = cfg.neovim;
-    extraPackages = cfg.extraPackages;
     gcc_new = cfg.gcc;
-    starterRepo = nvchad-starter;
+    extraPackages = cfg.extraPackages;
+    extraPlugins = cfg.extraPlugins;
     extraConfig = cfg.extraConfig;
     chadrcConfig = cfg.chadrcConfig;
     lazy-lock = cfg.lazy-lock;
-    extraPlugins = cfg.extraPlugins;
   };
 in
 {
   options.programs.nvchad = {
-    enable = mkEnableOption "Enable NvChad";
+    enable = mkEnableOption "Wether to enable NvChad.";
     extraPackages = mkOption {
       type = types.listOf types.package;
       default = [ ];
@@ -55,7 +55,6 @@ in
         ];
       '';
     };
-
     neovim = mkOption {
       type = types.package;
       default = pkgs.neovim;
@@ -65,17 +64,26 @@ in
     extraPlugins = mkOption {
       type = types.str;
       default = "return {}";
-      description = "The extra plugins you want to install. That's a part of lazy.nvim config.";
+      description = ''
+        The extra plugins you want to install.
+        That's a part of lazy.nvim config.
+      '';
     };
     extraConfig = mkOption {
       type = types.str;
       default = "";
-      description = "These config are loaded after nvchad in the end of init.lua in starter";
+      description = ''
+        These config are loaded after nvchad in the end of init.lua in starter
+      '';
     };
     chadrcConfig = mkOption {
       type = types.str;
       default = "";
-      description = "This config replaces the chadrc.lua file. Make sure to include `local M = {}` at the top, and `return M` at the bottom.";
+      description = ''
+        This config replaces the chadrc.lua file.
+        Make sure to include `local M = {}` at the top,
+        and `return M` at the bottom.
+      '';
     };
     gcc = mkOption {
       type = types.package;
@@ -127,10 +135,10 @@ in
           message = ''
             NvChad provides a neovim binary, please choose which you want to use.
 
-            Use Default neovim binary:
+            Use the default neovim binary:
             programs.neovim.enable = true;
 
-            Use Nvchad neovim binary:
+            Use the Nvchad neovim binary:
             programs.nvchad.enable = true;
 
             You cannot use both at the same time.

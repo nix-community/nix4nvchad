@@ -15,6 +15,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+
+    flake-utils.url = "github:numtide/flake-utils";
+
     nvchad-starter = {
       url = "github:NvChad/starter/main"; # people who want to use a different starter could override this.
       flake = false;
@@ -25,45 +28,36 @@
     {
       self,
       nixpkgs,
+      flake-utils,
       nvchad-starter,
     }:
-    let
-      supportedSystems = [
-        "x86_64-linux"
-        "x86_64-darwin"
-        "aarch64-linux"
-        "aarch64-darwin"
-      ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
-    in
-    {
-      # Executed by `nix build .#<name>`
-      packages = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgsFor.${system};
-        in
-        rec {
-          nvchad = pkgs.callPackage ./nix/nvchad.nix { starterRepo = "${nvchad-starter}"; };
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+      in
+      {
+        packages = rec {
+          nvchad = pkgs.callPackage ./nix/nvchad.nix { starterRepo = nvchad-starter; };
           default = nvchad;
-        }
-      );
-      # Executed by `nix run .#<name>
-      apps = forAllSystems (system: rec {
-        nvchad = {
-          type = "app";
-          program = "${self.packages.${system}.default}/bin/nvim";
         };
-        default = nvchad;
-      });
+        apps = rec {
+          nvchad =
+            flake-utils.lib.mkApp { drv = self.packages.${system}.nvchad; }
+            # ? workaround add meta attrs to avoid warning message
+            // {
+              meta = self.packages.${system}.nvchad.meta;
+            };
+          default = nvchad;
+        };
+        checks = self.packages.${system};
+      }
+    )
+    // {
       homeManagerModules = rec {
-        nvchad = import ./nix/module.nix {
-          inherit nvchad-starter;
-        };
+        nvchad = import ./nix/module.nix { starterRepo = nvchad-starter; };
         default = nvchad;
       };
       homeManagerModule = self.homeManagerModules.nvchad;
-      checks = self.packages;
     };
 }
