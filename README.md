@@ -73,15 +73,13 @@ You can choose any of the presented methods to install NvChad.
 nix run github:nix-community/nix4nvchad/#nvchad
 ```
 
-⚠️**WARNING**⚠️
-
-Run the command above if you are not using your `neovim` configuration!
-
-- If you already have a `neovim` configuration in `~/.config/nvim` and `init.lua` is present there
-nvchad will not copy the configuration to the home directory and will probably not start correctly
-- If there is no `init.lua` in `~/.config/nvim` but there are any other files, this will overwrite
-`~/.config/nvim` with the `NvChad starter` configuration
-- Your current configuration will be saved in `~/.config/nvim/nvim_%Y_%m_%d_%H_%M_%S.bak`
+> [!WARNING]
+> Run the command above if you are not using your `neovim` configuration!
+> - If you already have a `neovim` configuration in `~/.config/nvim` and `init.lua` is present there
+> nvchad will not copy the configuration to the home directory and will probably not start correctly
+> - If there is no `init.lua` in `~/.config/nvim` but there are any other files, this will overwrite
+> `~/.config/nvim` with the `NvChad starter` configuration
+> - Your current configuration will be saved in `~/.config/nvim/nvim_%Y_%m_%d_%H_%M_%S.bak`
 
 
 # Installation
