@@ -171,7 +171,7 @@ Somewhere in your `configuration.nix`
   nixpkgs = { 
     overlays = [
       (final: prev: {
-        nvchad = inputs.nvchad4nix.packages."${pkgs.system}".nvchad;
+        nvchad = inputs.nix4nvchad.packages."${pkgs.system}".nvchad;
       })
     ];
   };
@@ -200,7 +200,7 @@ Default:
 ```nix
 { inputs, config, pkgs, ... }: {
   imports = [
-    inputs.nvchad4nix.homeManagerModule
+    inputs.nix4nvchad.homeManagerModule
   ];
   programs.nvchad.enable = true;
 }
@@ -212,7 +212,7 @@ Or with customization of options:
 ```nix
 { inputs, config, pkgs, ... }: {
   imports = [
-    inputs.nvchad4nix.homeManagerModule
+    inputs.nix4nvchad.homeManagerModule
   ];
   programs.nvchad = {
     enable = true;
@@ -340,10 +340,10 @@ You probably do not need backups, just disable them
 
 # Usage
 
-Whichever method you choose, after installation you'll probably want to run `NvChad`
-Using the `nvim` wrapper executable it will be automatically available in your `$PATH`
-You can also launch through the application manager (rofi, wofi, etc)
-The package comes with `nvim.desktop`
+Whichever method you choose, after installation you'll probably want to run `NvChad`.  
+Using the `nvim` wrapper executable it will be automatically available in your `$PATH`.  
+You can also launch through the application manager (rofi, wofi, etc).  
+The package comes with `nvim.desktop`.  
 
 If you are not using the HM module or have disabled `hm-activation`:
 - `NvChad` expects `~/.config/nvim/init.lua` to be available at startup
@@ -363,9 +363,10 @@ Also, do not add neovim as a package to the configuration:
 home.packages = [ pkgs.neovim ];
 ```
 
-# Use your own NvChad
+# Use your own NvChad configuration
 
-You can use your own nvchad by providing [Starter](https://github.com/NvChad/starter) repo by following steps.
+You can use your own NvChad configuration by providing your own repository or local folder.  
+It has to follow the structure of [the NvChad starter](https://github.com/NvChad/starter) (a fork or local copy).  
 
 ```nix
   inputs = {
@@ -375,15 +376,18 @@ You can use your own nvchad by providing [Starter](https://github.com/NvChad/sta
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # adding the starter input here
     nvchad-starter = {
-      url = "github.com:NvChad/starter";
-      flakes = false;
+      url = "github.com:<github-username>/<repository-name>"; # <- replace this with your own
+      # url = "path:<local_path>" # <- for local relative folder (e.g. path:./home/nvim) 
+      flake = false;
     }
-    # NvChad:
-    nvchad4nix = {
+
+    nix4nvchad = {
       url = "github:nix-community/nix4nvchad";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nvchad-starter.follows = "nvchad-starter";
+      inputs.nvchad-starter.follows = "nvchad-starter"; # <- overwrite the module input here
     };
   };
 ```
