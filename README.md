@@ -363,9 +363,10 @@ Also, do not add neovim as a package to the configuration:
 home.packages = [ pkgs.neovim ];
 ```
 
-# Use your own NvChad
+# Use your own NvChad configuration
 
-You can use your own nvchad by providing [Starter](https://github.com/NvChad/starter) repo by following steps.
+You can use your own NvChad configuration by providing your own repository or local folder.  
+It has to follow the structure of [the NvChad starter](https://github.com/NvChad/starter) (a fork or local copy).  
 
 ```nix
   inputs = {
@@ -375,15 +376,18 @@ You can use your own nvchad by providing [Starter](https://github.com/NvChad/sta
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # adding the starter input here
     nvchad-starter = {
-      url = "github.com:NvChad/starter";
-      flakes = false;
+      url = "github.com:<github-username>/<repository-name>"; # <- replace this with your own
+      # url = "path:<local_path>" # <- for local relative folder (e.g. path:./home/nvim) 
+      flake = false;
     }
-    # NvChad:
+
     nvchad4nix = {
       url = "github:nix-community/nix4nvchad";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nvchad-starter.follows = "nvchad-starter";
+      inputs.nvchad-starter.follows = "nvchad-starter"; # <- overwrite the module input here
     };
   };
 ```
