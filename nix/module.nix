@@ -32,7 +32,7 @@ let
 in
 {
   options.programs.nvchad = {
-    enable = mkEnableOption "Wether to enable NvChad.";
+    enable = mkEnableOption "Whether to enable NvChad.";
     extraPackages = mkOption {
       type = types.listOf types.package;
       default = [ ];
