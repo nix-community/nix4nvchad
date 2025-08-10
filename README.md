@@ -118,7 +118,7 @@ They are respectively found in the flake as
 
 
 - `inputs.nix4nvchad.homeManagerModules.default`
-- `inputs.nix4nvchad.homeManagerModules.default`
+- `inputs.nix4nvchad.homeManagerModules.nvchad`
 - `inputs.nix4nvchad.homeManagerModule`
 
 (Where `${system}` is either `x86_64-linux` `aarch64-linux` `x86_64-darwin` `aarch64-darwin`)
