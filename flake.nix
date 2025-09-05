@@ -43,7 +43,10 @@
         };
         apps = rec {
           nvchad =
-            flake-utils.lib.mkApp { drv = self.packages.${system}.nvchad; }
+            flake-utils.lib.mkApp { 
+              drv = self.packages.${system}.nvchad;
+              name = "nvim";
+            }
             # ? workaround add meta attrs to avoid warning message
             // {
               meta = self.packages.${system}.nvchad.meta;
