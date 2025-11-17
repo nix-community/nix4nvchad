@@ -139,12 +139,16 @@ In the example below, the home manager is installed as a NixOS module
     in {
     nixosConfigurations = {
       dummy-host = lib.nixosSystem {
+        specialArgs = {
+          inherit system inputs;           # <- this will make inputs available anywhere in the NixOS configuration
+        };
         modules = [
-          inherit specialArgs;           # <- this will make inputs available anywhere in the NixOS configuration
           ./path/to/configuration.nix
           home-manager.nixosModules.home-manager {
             home-manager = {
-              inherit extraSpecialArgs;  # <- this will make inputs available anywhere in the HM configuration
+              extraSpecialArgs = {
+                inherit system inputs;     # <- this will make inputs available anywhere in the HM configuration
+              };
               useGlobalPkgs = true;
               useUserPackages = true;
               users.dummyUserName = import ./path/to/home.nix;
@@ -184,6 +188,7 @@ Now you can call the package anywhere as a package from nixpkgs
 - `pkgs.nvchad`
 
 Examples:
+- `environment.systemPackages = [ pkgs.nvchad ];` NixOS
 - `users.users.<name>.packages = [ pkgs.nvchad ];` NixOS
 - `home.packages = with pkgs; [ pkgs.nvchad ];`  home-manager
 
