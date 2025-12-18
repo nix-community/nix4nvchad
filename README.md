@@ -18,6 +18,7 @@ You can choose any of the presented methods to install NvChad.
 <details>
   <summary> <b>General notes</b> </summary>
   <br/>
+  
   NvChad itself is not an executable file, it is a perfect configuration for [Neovim](https://neovim.io/).
 
   Unfortunately there is no easy way to add it to `/nix/store`
