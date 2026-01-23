@@ -22,7 +22,7 @@
   extraConfig ? "",
   chadrcConfig ? "",
   starterRepo,
-  extraPlugins ? "return {}",
+  extraPlugins ? "",
   lazy-lock ? "",
 }:
 let
@@ -83,15 +83,21 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     chmod 777 $out/config
     chmod 777 $out/config/lua # cp make it unwritable
     chmod 777 $out/config/lua/plugins
-    ${optionalString (chadrcConfig != "") "install -Dm777 $NewChadrcFile $out/config/lua/chadrc.lua"}
-    mv $out/config/lua/plugins/init.lua $out/config/lua/plugins/init-1.lua
-    install -Dm777 $extraPluginsFile $out/config/lua/plugins/init-2.lua
-    install -Dm777 $NewPluginsFile $out/config/lua/plugins/init.lua
+    ${optionalString (chadrcConfig != "") ''
+      install -Dm777 $NewChadrcFile $out/config/lua/chadrc.lua
+    ''}
+    ${optionalString (extraPlugins != "") ''
+      mv $out/config/lua/plugins/init.lua $out/config/lua/plugins/init-1.lua
+      install -Dm777 $extraPluginsFile $out/config/lua/plugins/init-2.lua
+      install -Dm777 $NewPluginsFile $out/config/lua/plugins/init.lua
+    ''}
     install -Dm777 $nvChadBin $out/bin/nvim
     install -Dm777 $LockFile $out/config/lazy-lock.json
-    install -Dm777 "$extraConfigFile" $out/config/lua/extraConfig.lua;
-    mv $out/config/init.lua $out/config/lua/init.lua
-    install -Dm777 $NewInitFile $out/config/init.lua
+    ${optionalString (extraConfig != "") ''
+      install -Dm777 $extraConfigFile $out/config/lua/extraConfig.lua
+      mv $out/config/init.lua $out/config/lua/init.lua
+      install -Dm777 $NewInitFile $out/config/init.lua
+    ''}
     wrapProgram $out/bin/nvim --prefix PATH : '${makeBinPath finalAttrs.buildInputs}'
     runHook postInstall
   '';

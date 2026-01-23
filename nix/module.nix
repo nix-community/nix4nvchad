@@ -63,10 +63,11 @@ in
     };
     extraPlugins = mkOption {
       type = types.str;
-      default = "return {}";
+      default = "";
       description = ''
         The extra plugins you want to install.
         That's a part of lazy.nvim config.
+        return {...}
       '';
     };
     extraConfig = mkOption {
