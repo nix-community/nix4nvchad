@@ -24,6 +24,7 @@
   starterRepo,
   extraPlugins ? "",
   lazy-lock ? "",
+  withDesktopFile ? true,
 }:
 let
   inherit (lib)
@@ -102,11 +103,11 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
-  postInstall = ''
+  postInstall = if withDesktopFile then ''
     mkdir -p $out/share/{applications,icons/hicolor/scalable/apps}
-    cp $nvChadContrib/nvim.desktop $out/share/applications
+    cp $nvChadContrib/nvchad.desktop $out/share/applications
     cp $nvChadContrib/nvchad.svg $out/share/icons/hicolor/scalable/apps
-  '';
+  '' else "";
 
   meta = {
     description = "Blazing fast Neovim config providing solid defaults and a beautiful UI";
