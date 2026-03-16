@@ -28,6 +28,7 @@ let
     extraConfig = cfg.extraConfig;
     chadrcConfig = cfg.chadrcConfig;
     lazy-lock = cfg.lazy-lock;
+    withDesktopFile = cfg.withDesktopFile;
   };
 in
 {
@@ -97,6 +98,11 @@ in
       description = ''
         Your lazy-lock.json. Left it blank if is not needed
       '';
+    };
+    withDesktopFile = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to add a .desktop file for Nvchad";
     };
     backup = mkOption {
       type = types.bool;
