@@ -1,0 +1,14 @@
+[book]
+authors = [
+    "MOIS3Y"
+]
+language = "en"
+src = "src"
+title = "NvChad on Nix Documentation"
+
+[output.html]
+git-repository-url = "https://github.com/nix-community/nix4nvchad"
+edit-url-template = "https://github.com/nix-community/nix4nvchad/edit/main/docs/{path}"
+preferred-dark-theme = "macchiato"
+additional-css = ["theme/catppuccin.css"]
+theme = "theme"

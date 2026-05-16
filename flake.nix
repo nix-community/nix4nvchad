@@ -43,7 +43,7 @@
         };
         apps = rec {
           nvchad =
-            flake-utils.lib.mkApp { 
+            flake-utils.lib.mkApp {
               drv = self.packages.${system}.nvchad;
               name = "nvim";
             }
@@ -54,6 +54,9 @@
           default = nvchad;
         };
         checks = self.packages.${system};
+        devShells.default = pkgs.mkShell {
+          buildInputs = [ pkgs.mdbook ];
+        };
       }
     )
     // {
@@ -61,6 +64,8 @@
         nvchad = import ./nix/module.nix { starterRepo = nvchad-starter; };
         default = nvchad;
       };
+      # DEPRECATED: This attribute will be removed soon.
+      # Use homeManagerModules.default instead.
       homeManagerModule = self.homeManagerModules.nvchad;
     };
 }
