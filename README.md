@@ -86,7 +86,7 @@ nix run github:nix-community/nix4nvchad/#nvchad
 # Installation
 
 To install it you **must have flake enabled** and your NixOS configuration
-**must be managed with flakes.** See [Flakes](https://nixos.wiki/wiki/Flakes) for
+**must be managed with flakes.** See [Flakes](https://wiki.nixos.org/wiki/Flakes) for
 instructions on how to install and enable them on NixOS.
 
 ### First step
